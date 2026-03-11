@@ -3,17 +3,27 @@ using System;
 
 public partial class CameraController : Node3D
 {
+    public enum CameraMode
+    {
+        Orbital,
+        Free
+    }
+
     [Export] public float RotationSpeed = 0.005f;
     [Export] public float ZoomSpeed = 0.5f;
     [Export] public float PanSpeed = 0.01f;
     [Export] public float MinZoom = 1.0f;
     [Export] public float MaxZoom = 150.0f;
+    [Export] public float FreeMoveSpeed = 20.0f;
+
+    public CameraMode CurrentMode = CameraMode.Orbital;
 
     private Node3D _innerGimbal;
     private Camera3D _camera;
     private bool _isDragging = false;
     private bool _isPanning = false;
     private Vector2 _lastMousePosition;
+    private float _currentZoom = 10.0f;
 
     public override void _Ready()
     {
@@ -32,10 +42,23 @@ public partial class CameraController : Node3D
             _camera.Position = new Vector3(0, 0, 10);
             _innerGimbal.AddChild(_camera);
         }
+
+        if (_camera != null)
+        {
+            _currentZoom = _camera.Position.Z;
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
+        {
+            if (keyEvent.Keycode == Key.Alt)
+            {
+                ToggleCameraMode();
+            }
+        }
+
         // 1. Zoom (Scroll do Mouse)
         if (@event is InputEventMouseButton mouseButton)
         {
@@ -85,10 +108,18 @@ public partial class CameraController : Node3D
 
     private void ApplyZoom(float amount)
     {
-        // Movemos a camera ao longo de seu proprio eixo Z local para dar zoom in/out
-        Vector3 newPos = _camera.Position;
-        newPos.Z = Mathf.Clamp(newPos.Z + amount, MinZoom, MaxZoom);
-        _camera.Position = newPos;
+        if (CurrentMode == CameraMode.Orbital)
+        {
+            // Movemos a camera ao longo de seu proprio eixo Z local para dar zoom in/out
+            Vector3 newPos = _camera.Position;
+            newPos.Z = Mathf.Clamp(newPos.Z + amount, MinZoom, MaxZoom);
+            _camera.Position = newPos;
+            _currentZoom = newPos.Z;
+        }
+        else if (CurrentMode == CameraMode.Free)
+        {
+            GlobalPosition += _camera.GlobalTransform.Basis.Z * amount * 2.0f;
+        }
     }
 
     private void ApplyRotation(Vector2 delta)
@@ -112,5 +143,45 @@ public partial class CameraController : Node3D
         Vector3 up = GlobalTransform.Basis.Y;
 
         GlobalPosition -= (right * delta.X * PanSpeed) + (up * -delta.Y * PanSpeed); // Y da tela inverte
+    }
+
+    private void ToggleCameraMode()
+    {
+        if (CurrentMode == CameraMode.Orbital)
+        {
+            CurrentMode = CameraMode.Free;
+            Vector3 camGlobalPos = _camera.GlobalPosition;
+            GlobalPosition = camGlobalPos;
+            _camera.Position = Vector3.Zero;
+        }
+        else
+        {
+            CurrentMode = CameraMode.Orbital;
+            Vector3 camGlobalPos = _camera.GlobalPosition;
+            Vector3 backward = _camera.GlobalTransform.Basis.Z;
+            GlobalPosition = camGlobalPos - backward * _currentZoom;
+            _camera.Position = new Vector3(0, 0, _currentZoom);
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (CurrentMode == CameraMode.Free)
+        {
+            Vector3 velocity = Vector3.Zero;
+
+            if (Input.IsKeyPressed(Key.W)) velocity -= _camera.GlobalTransform.Basis.Z;
+            if (Input.IsKeyPressed(Key.S)) velocity += _camera.GlobalTransform.Basis.Z;
+            if (Input.IsKeyPressed(Key.A)) velocity -= _camera.GlobalTransform.Basis.X;
+            if (Input.IsKeyPressed(Key.D)) velocity += _camera.GlobalTransform.Basis.X;
+            if (Input.IsKeyPressed(Key.E)) velocity += _camera.GlobalTransform.Basis.Y;
+            if (Input.IsKeyPressed(Key.Q)) velocity -= _camera.GlobalTransform.Basis.Y;
+
+            if (velocity.LengthSquared() > 0)
+            {
+                velocity = velocity.Normalized();
+                GlobalPosition += velocity * FreeMoveSpeed * (float)delta;
+            }
+        }
     }
 }
