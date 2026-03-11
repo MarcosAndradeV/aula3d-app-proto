@@ -16,6 +16,8 @@ public partial class GameManager : Node
 		{
 			_uiManager.OnLoadLocalRequested += HandleLoadLocalRequest;
 			_uiManager.OnAxisValuesChanged += HandleAxisValuesChanged;
+			_uiManager.OnPositionValuesChanged += HandlePositionValuesChanged;
+            _uiManager.OnScaleValuesChanged += HandleScaleValuesChanged;
 		}
 
 		// Setup FileDialog em runtime para que funcione se nao estiver configurado na cena
@@ -34,7 +36,7 @@ public partial class GameManager : Node
 
 	private void HandleLoadLocalRequest()
 	{
-		_fileDialog.PopupCenteredRatio(0.5f);
+        _fileDialog.PopupCenteredRatio(0.5f);
 	}
 
 	private void HandleAxisValuesChanged(float x, float y, float z)
@@ -45,13 +47,24 @@ public partial class GameManager : Node
         _modelManager?.SetModelRotation(x, y, z);
     }
 
+    private void HandlePositionValuesChanged(float x, float y, float z)
+    {
+        _modelManager?.SetModelPosition(x, y, z);
+    }
+
+    private void HandleScaleValuesChanged(float x, float y, float z)
+    {
+        _modelManager?.SetModelScale(x, y, z);
+    }
+
 	private async void OnFileSelected(string path)
 	{
 		GD.Print($"Tentando carregar modelo local: {path}");
 
 		if (_modelManager != null)
 		{
-			await _modelManager.LoadModelAsync(path);
+            await _modelManager.LoadModelAsync(path);
+            _uiManager.LabelCam.Show();
 		}
 		else
 		{

@@ -10,15 +10,32 @@ public partial class UIManager : CanvasLayer
     private CheckBox _checkY;
     private CheckBox _checkZ;
     private Button _btnLoadLocal;
+    private LabelCam _labelCam;
+
+    private HSlider _sliderPosX;
+    private HSlider _sliderPosY;
+    private HSlider _sliderPosZ;
+
+    private HSlider _sliderScaleX;
+    private HSlider _sliderScaleY;
+    private HSlider _sliderScaleZ;
 
     // Distância máxima do clipping. Para objetos muito grandes, esse valor pode precisar ser ajustado via código dependendo da AABB do Modelo
     private float _maxClipDistance = 50.0f;
+
+    public LabelCam LabelCam { get => _labelCam; set => _labelCam = value; }
 
     [Signal]
     public delegate void OnLoadLocalRequestedEventHandler();
 
     [Signal]
     public delegate void OnAxisValuesChangedEventHandler(float x, float y, float z);
+
+    [Signal]
+    public delegate void OnPositionValuesChangedEventHandler(float x, float y, float z);
+
+    [Signal]
+    public delegate void OnScaleValuesChangedEventHandler(float x, float y, float z);
 
     public override void _Ready()
     {
@@ -34,6 +51,15 @@ public partial class UIManager : CanvasLayer
         _checkZ = GetNodeOrNull<CheckBox>("Panel/VBoxContainer/HBoxZ/CheckZ");
 
         _btnLoadLocal = GetNodeOrNull<Button>("Panel/BtnLoadLocal");
+        _labelCam = GetNodeOrNull<LabelCam>("Panel/LabelCam");
+
+        _sliderPosX = GetNodeOrNull<HSlider>("Panel/VBoxContainer/HBoxPosX/SliderPosX");
+        _sliderPosY = GetNodeOrNull<HSlider>("Panel/VBoxContainer/HBoxPosY/SliderPosY");
+        _sliderPosZ = GetNodeOrNull<HSlider>("Panel/VBoxContainer/HBoxPosZ/SliderPosZ");
+
+        _sliderScaleX = GetNodeOrNull<HSlider>("Panel/VBoxContainer/HBoxScaleX/SliderScaleX");
+        _sliderScaleY = GetNodeOrNull<HSlider>("Panel/VBoxContainer/HBoxScaleY/SliderScaleY");
+        _sliderScaleZ = GetNodeOrNull<HSlider>("Panel/VBoxContainer/HBoxScaleZ/SliderScaleZ");
 
         if (_sliderX != null)
         {
@@ -61,6 +87,14 @@ public partial class UIManager : CanvasLayer
             _btnLoadLocal.Pressed += () => EmitSignal(SignalName.OnLoadLocalRequested);
         }
 
+        if (_sliderPosX != null) _sliderPosX.ValueChanged += (val) => EmitPositionValues();
+        if (_sliderPosY != null) _sliderPosY.ValueChanged += (val) => EmitPositionValues();
+        if (_sliderPosZ != null) _sliderPosZ.ValueChanged += (val) => EmitPositionValues();
+
+        if (_sliderScaleX != null) _sliderScaleX.ValueChanged += (val) => EmitScaleValues();
+        if (_sliderScaleY != null) _sliderScaleY.ValueChanged += (val) => EmitScaleValues();
+        if (_sliderScaleZ != null) _sliderScaleZ.ValueChanged += (val) => EmitScaleValues();
+
         // Setup Inicial dos Global Uniforms para desativado
         DisableAllClipping();
     }
@@ -80,6 +114,24 @@ public partial class UIManager : CanvasLayer
         float z = _sliderZ != null ? (float)_sliderZ.Value : 0f;
 
         EmitSignal(SignalName.OnAxisValuesChanged, x, y, z);
+    }
+
+    private void EmitPositionValues()
+    {
+        float x = _sliderPosX != null ? (float)_sliderPosX.Value : 0f;
+        float y = _sliderPosY != null ? (float)_sliderPosY.Value : 0f;
+        float z = _sliderPosZ != null ? (float)_sliderPosZ.Value : 0f;
+
+        EmitSignal(SignalName.OnPositionValuesChanged, x, y, z);
+    }
+
+    private void EmitScaleValues()
+    {
+        float x = _sliderScaleX != null ? (float)_sliderScaleX.Value : 1f;
+        float y = _sliderScaleY != null ? (float)_sliderScaleY.Value : 1f;
+        float z = _sliderScaleZ != null ? (float)_sliderScaleZ.Value : 1f;
+
+        EmitSignal(SignalName.OnScaleValuesChanged, x, y, z);
     }
 
     private void UpdateClippingPlane(string axis, float sliderValue, bool isEnabled)

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://3jt2u80lsajw" path="res://src/Core/GameManager.cs" id="1_gm"]
 [ext_resource type="Script" uid="uid://c4pb4obfvfuws" path="res://src/UI/UIManager.cs" id="2_ui"]
 [ext_resource type="Script" uid="uid://c46wp1en67glj" path="res://src/Camera/CameraController.cs" id="3_cam"]
+[ext_resource type="Script" uid="uid://ddadabyt5xmxt" path="res://src/UI/LabelCam.cs" id="3_fos0i"]
 [ext_resource type="Script" uid="uid://ctjn8lcdf1f57" path="res://src/Core/ModelManager.cs" id="4_mod"]
 
 [sub_resource type="Environment" id="Environment_main"]
@@ -60,7 +61,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 max_value = 360.0
-value = 50.0
 
 [node name="HBoxY" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=256498626]
 layout_mode = 2
@@ -74,7 +74,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 max_value = 360.0
-value = 50.0
 
 [node name="HBoxZ" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=1738396011]
 layout_mode = 2
@@ -88,16 +87,123 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 max_value = 360.0
-value = 50.0
 
 [node name="HSeparator2" type="HSeparator" parent="UIManager/Panel/VBoxContainer" unique_id=469825301]
 layout_mode = 2
+
+[node name="TitleTransform" type="Label" parent="UIManager/Panel/VBoxContainer" unique_id=960944072]
+layout_mode = 2
+text = "Transformação"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="UIManager/Panel/VBoxContainer" unique_id=836148499]
+layout_mode = 2
+
+[node name="HBoxPosX" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=1110504675]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UIManager/Panel/VBoxContainer/HBoxPosX" unique_id=1739195942]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Pos X"
+
+[node name="SliderPosX" type="HSlider" parent="UIManager/Panel/VBoxContainer/HBoxPosX" unique_id=1661854361]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = -50.0
+max_value = 50.0
+step = 0.1
+
+[node name="HBoxPosY" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=1637706039]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UIManager/Panel/VBoxContainer/HBoxPosY" unique_id=308815318]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Pos Y"
+
+[node name="SliderPosY" type="HSlider" parent="UIManager/Panel/VBoxContainer/HBoxPosY" unique_id=1153912759]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = -50.0
+max_value = 50.0
+step = 0.1
+
+[node name="HBoxPosZ" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=304386276]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UIManager/Panel/VBoxContainer/HBoxPosZ" unique_id=300583382]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Pos Z"
+
+[node name="SliderPosZ" type="HSlider" parent="UIManager/Panel/VBoxContainer/HBoxPosZ" unique_id=355787402]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = -50.0
+max_value = 50.0
+step = 0.1
+
+[node name="HBoxScaleX" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=1440292686]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UIManager/Panel/VBoxContainer/HBoxScaleX" unique_id=217767337]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Scale X"
+
+[node name="SliderScaleX" type="HSlider" parent="UIManager/Panel/VBoxContainer/HBoxScaleX" unique_id=759617532]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+max_value = 10.0
+step = 0.1
+value = 1.0
+
+[node name="HBoxScaleY" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=296219867]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UIManager/Panel/VBoxContainer/HBoxScaleY" unique_id=1034209595]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Scale Y"
+
+[node name="SliderScaleY" type="HSlider" parent="UIManager/Panel/VBoxContainer/HBoxScaleY" unique_id=1254932151]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+max_value = 10.0
+step = 0.1
+value = 1.0
+
+[node name="HBoxScaleZ" type="HBoxContainer" parent="UIManager/Panel/VBoxContainer" unique_id=1441871404]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UIManager/Panel/VBoxContainer/HBoxScaleZ" unique_id=1259691891]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Scale Z"
+
+[node name="SliderScaleZ" type="HSlider" parent="UIManager/Panel/VBoxContainer/HBoxScaleZ" unique_id=48573692]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+max_value = 10.0
+step = 0.1
+value = 1.0
 
 [node name="LabelCam" type="Label" parent="UIManager/Panel/VBoxContainer" unique_id=1357732554]
 layout_mode = 2
 text = "Câmera: Arrastar para Rotacionar
 Shift+Arrastar para Mover (Pan)
 Scroll: Zoom"
+script = ExtResource("3_fos0i")
 
 [node name="BtnLoadLocal" type="Button" parent="UIManager/Panel" unique_id=267999399]
 layout_mode = 1

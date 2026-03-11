@@ -123,4 +123,9 @@ public partial class ModelManager : Node3D
             _currentModel.Scale = new Vector3(x, y, z);
         }
     }
+
+    internal bool ModelIsLoaded()
+    {
+        return _currentModel != null;
+    }
 }
