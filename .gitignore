@@ -2,5 +2,14 @@
 .godot/
 /android/
 
+# .NET / C# general ignores
+[Bb]in/
+[Oo]bj/
+
+# Rider / VS Code
+.idea/
+.vscode/
+*.sln.DotSettings.user
+
 *.dll
 *.pdb
